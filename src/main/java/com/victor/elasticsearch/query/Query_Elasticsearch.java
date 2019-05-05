@@ -44,7 +44,7 @@ public class Query_Elasticsearch {
 
         // 2 连接集群
         client = new PreBuiltTransportClient(settings);
-        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("hadoop102"), 9300));
+        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
 
         // 3 打印集群名称
         System.out.println(client.toString());
@@ -79,7 +79,7 @@ public class Query_Elasticsearch {
     public void query() {
         // 1 条件查询
         SearchResponse searchResponse = client.prepareSearch("blog").setTypes("article")
-                .setQuery(QueryBuilders.queryStringQuery("全文")).get();
+                .setQuery(QueryBuilders.queryStringQuery("全1文")).get();//全文1  全1文 也是这个结果？？？？
 
         // 2 打印查询结果
         SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
@@ -127,7 +127,7 @@ public class Query_Elasticsearch {
 
         // 1 第一field查询
         SearchResponse searchResponse = client.prepareSearch("blog").setTypes("article")
-                .setQuery(QueryBuilders.termQuery("content", "全")).get();
+                .setQuery(QueryBuilders.termQuery("content", "3")).get();//全
 
         // 2 打印查询结果
         SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
@@ -197,7 +197,7 @@ public class Query_Elasticsearch {
         // 2 添加mapping
         PutMappingRequest mapping = Requests.putMappingRequest("blog4").type("article").source(builder);
 
-        client.admin().indices().putMapping(mapping).get();
+        client.admin().indices().putMapping(mapping).get();/// IndexNotFoundException ？？？？
 
         // 3 关闭资源
         client.close();

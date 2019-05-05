@@ -37,7 +37,8 @@ public class Junit_Elasticsearch {
 
         // 2 连接集群
         client = new PreBuiltTransportClient(settings);
-        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("hadoop102"), 9300));
+        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));//ok
+//      client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("hadoop102"), 9300));
 
         // 3 打印集群名称
         System.out.println(client.toString());
@@ -49,8 +50,8 @@ public class Junit_Elasticsearch {
     public void createIndex_blog(){
 
         // 1 创建索引
-        client.admin().indices().prepareCreate("blog2").get();
-
+        System.out.println(client.admin().indices().prepareCreate("blog2").get().toString());
+        System.out.println("----ok-----");
         // 2 关闭连接
         client.close();
     }
@@ -60,7 +61,7 @@ public class Junit_Elasticsearch {
     public void deleteIndex(){
 
         // 1 删除索引
-        client.admin().indices().prepareDelete("blog2").get();
+        System.out.println(client.admin().indices().prepareDelete("blog2").get().toString());//再次删除则报错。[blog2] IndexNotFoundException[no such index。
 
         // 2 关闭连接
         client.close();
@@ -96,12 +97,12 @@ public class Junit_Elasticsearch {
 
         // 1 文档数据准备
         Map<String, Object> json = new HashMap<String, Object>();
-        json.put("id", "2");
-        json.put("title", "基于Lucene的搜索服务器");
-        json.put("content", "它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口");
+        json.put("id", "3");
+        json.put("title", "基于Lucene的搜索服务器3");
+        json.put("content", "它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口3");
 
         // 2 创建文档
-        IndexResponse indexResponse = client.prepareIndex("blog", "article", "2").setSource(json).execute().actionGet();
+        IndexResponse indexResponse = client.prepareIndex("blog", "article", "3").setSource(json).execute().actionGet();
 
         // 3 打印返回的结果
         System.out.println("index:" + indexResponse.getIndex());
@@ -109,6 +110,7 @@ public class Junit_Elasticsearch {
         System.out.println("id:" + indexResponse.getId());
         System.out.println("version:" + indexResponse.getVersion());
         System.out.println("result:" + indexResponse.getResult());
+        System.out.println("toString:" + indexResponse.toString());
 
         // 4 关闭连接
         client.close();
@@ -124,7 +126,7 @@ public class Junit_Elasticsearch {
                 .endObject();
 
         // 2 创建文档
-        IndexResponse indexResponse = client.prepareIndex("blog", "article", "3").setSource(builder).get();
+        IndexResponse indexResponse = client.prepareIndex("blog", "article", "6").setSource(builder).get();
 
         // 3 打印返回的结果
         System.out.println("index:" + indexResponse.getIndex());
@@ -132,7 +134,7 @@ public class Junit_Elasticsearch {
         System.out.println("id:" + indexResponse.getId());
         System.out.println("version:" + indexResponse.getVersion());
         System.out.println("result:" + indexResponse.getResult());
-
+        System.out.println("toString:" + indexResponse.toString());
         // 4 关闭连接
         client.close();
     }
@@ -142,10 +144,10 @@ public class Junit_Elasticsearch {
     public void getData() throws Exception {
 
         // 1 查询文档
-        GetResponse response = client.prepareGet("blog", "article", "1").get();
+        GetResponse response = client.prepareGet("blog", "article", "6").get();
 
         // 2 打印搜索的结果
-        System.out.println(response.getSourceAsString());
+        System.out.println(response.getSourceAsString());//没值返回null.
 
         // 3 关闭连接
         client.close();
@@ -157,7 +159,7 @@ public class Junit_Elasticsearch {
 
         // 1 查询多个文档
         MultiGetResponse response = client.prepareMultiGet().add("blog", "article", "1").add("blog", "article", "2", "3")
-                .add("blog", "article", "2").get();
+                .add("blog", "article", "2").add("blog","article","5").get();//ok repeat
 
         // 2 遍历返回的结果
         for(MultiGetItemResponse itemResponse:response){
@@ -186,10 +188,10 @@ public class Junit_Elasticsearch {
 
         updateRequest.doc(XContentFactory.jsonBuilder().startObject()
                 // 对没有的字段添加, 对已有的字段替换
-                .field("title", "基于Lucene的搜索服务器")
+                .field("title", "基于Lucene的搜索服务器update")
                 .field("content",
                         "它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。大数据前景无限")
-                .field("createDate", "2017-8-22").endObject());
+                .field("updateDate", "2019-5-5 20：20").endObject());
 
         // 2 获取更新后的值
         UpdateResponse indexResponse = client.update(updateRequest).get();
@@ -200,6 +202,7 @@ public class Junit_Elasticsearch {
         System.out.println("id:" + indexResponse.getId());
         System.out.println("version:" + indexResponse.getVersion());
         System.out.println("create:" + indexResponse.getResult());
+        System.out.println("toString:" + indexResponse.toString());
 
         // 4 关闭连接
         client.close();
@@ -233,7 +236,7 @@ public class Junit_Elasticsearch {
         System.out.println("type:" + indexResponse.getType());
         System.out.println("id:" + indexResponse.getId());
         System.out.println("version:" + indexResponse.getVersion());
-        System.out.println("found:" + indexResponse.getResult());
+        System.out.println("found:" + indexResponse.getResult());//not found
 
         // 3 关闭连接
         client.close();
