@@ -24,7 +24,7 @@ public class UpdateAPI extends ElasticsearchClientBase {
         UpdateRequest updateRequest = new UpdateRequest();
         updateRequest.index("twitter");
         updateRequest.type("tweet");
-        updateRequest.id("2");
+        updateRequest.id("21");
         updateRequest.doc(jsonBuilder()
                 .startObject()
                 .field("user", "http://quanke.name")
@@ -43,7 +43,7 @@ public class UpdateAPI extends ElasticsearchClientBase {
 //                .setScript(new Script(ScriptType.INLINE, "ctx._source.user = \"quanke.name\"", null, null))
 //                .get();//NullPointerException
 
-        client.prepareUpdate("twitter", "tweet", "2")
+        client.prepareUpdate("twitter", "tweet", "21")
                 .setDoc(jsonBuilder()
                         .startObject()
                         .field("user", "quanke.name")

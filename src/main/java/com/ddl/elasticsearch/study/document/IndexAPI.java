@@ -73,7 +73,7 @@ public class IndexAPI extends ElasticsearchClientBase {
                 .startObject()
                 .field("user", "kimchy")
                 .field("postDate", new Date())
-                .field("age",10)
+                .field("age",2)
                 .field("gender","male")
                 .field("message", "trying out Elasticsearch")
                 .endObject();

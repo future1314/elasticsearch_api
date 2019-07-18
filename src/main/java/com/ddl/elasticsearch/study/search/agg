@@ -1,0 +1,13 @@
+localhost:9200/twitter/_mapping/tweet
+localhost:9200/twitter/_mapping/tweet
+
+{
+  "properties":{
+    "user":{
+      "type":"text",
+      "fielddata":true
+    }
+  }
+}
+
+
